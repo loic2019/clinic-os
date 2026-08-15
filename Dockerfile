@@ -25,6 +25,11 @@ COPY database/ ./database/
 # container/URL needed for platforms like Render.
 COPY frontend/ ./frontend/
 
+# Startup script: migrations + seed + server, in one place, used
+# identically by docker-compose and Render (see start.sh for why).
+COPY start.sh ./start.sh
+RUN chmod +x start.sh
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
@@ -33,7 +38,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8000}/api/health || exit 1
 
-# Shell form (not exec/JSON form) so $PORT is substituted — hosting
-# platforms like Render assign a dynamic port via this env var; falls
-# back to 8000 for local `docker run` / docker-compose.
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+CMD ["./start.sh"]
