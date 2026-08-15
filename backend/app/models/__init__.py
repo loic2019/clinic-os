@@ -29,6 +29,16 @@ from app.models.consultation import (  # noqa: F401
     PrescriptionItem,
 )
 from app.models.appointment import Appointment, AppointmentStatus  # noqa: F401
+from app.models.laboratory import (  # noqa: F401
+    LabItemStatus,
+    LabOrder,
+    LabOrderItem,
+    LabOrderStatus,
+    LabResult,
+    LabSample,
+    LabTestCatalog,
+    SampleType,
+)
 
 __all__ = [
     "UUIDPKMixin",
@@ -57,4 +67,12 @@ __all__ = [
     "PrescriptionItem",
     "Appointment",
     "AppointmentStatus",
+    "LabTestCatalog",
+    "LabOrder",
+    "LabOrderItem",
+    "LabSample",
+    "LabResult",
+    "LabOrderStatus",
+    "LabItemStatus",
+    "SampleType",
 ]
