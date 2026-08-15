@@ -266,3 +266,108 @@ body {
 
 .form-message--ok { color: var(--color-success); }
 .form-message--error { color: var(--color-danger); }
+
+/* --- Dashboard shell header --- */
+
+.authenticated-shell {
+  max-width: 900px;
+}
+
+.shell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.shell-header h1 {
+  margin: 0;
+}
+
+.shell-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 14px;
+}
+
+.shell-role {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.shell-user #logout-button {
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+/* --- Dashboard KPI cards --- */
+
+.dashboard-section {
+  margin-top: 20px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.kpi-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 20px;
+  text-align: center;
+}
+
+.kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-primary);
+}
+
+.kpi-label {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.kpi-empty {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+/* --- Users management (reuses .patients-table, .inline-form-vertical) --- */
+
+.users-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.users-list select,
+.add-user-details select {
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-weight: 400;
+}

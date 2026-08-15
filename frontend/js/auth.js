@@ -9,6 +9,8 @@
 
 import { login, logout, getCurrentUser, getAccessToken } from "./api.js";
 import { renderPatientsSection } from "./patients.js";
+import { renderDashboardSection } from "./dashboard.js";
+import { renderUsersSection } from "./users.js";
 
 export async function isLoggedIn() {
   if (!getAccessToken()) return false;
@@ -69,20 +71,24 @@ export async function renderAuthenticatedShell(container) {
 
   container.innerHTML = `
     <div class="authenticated-shell">
-      <h1>CLINIC OS</h1>
-      <p>Bienvenue, <strong>${user.full_name}</strong> (${user.username})</p>
-      <p>Rôles : ${user.roles.join(", ") || "—"}</p>
-      <details>
-        <summary>Permissions (${user.permissions.length})</summary>
-        <ul>${user.permissions.map((p) => `<li>${p}</li>`).join("")}</ul>
-      </details>
-      <button id="logout-button">Se déconnecter</button>
-      <p class="phase-note">
-        Le tableau de bord complet (sidebar, KPIs, tous les modules) arrive à partir
-        de la Phase 9. Le module Patients ci-dessous est déjà pleinement fonctionnel :
-        recherche, création, archivage passent réellement par l'API et PostgreSQL.
-      </p>
+      <div class="shell-header">
+        <h1>CLINIC OS</h1>
+        <div class="shell-user">
+          <span>${user.full_name} <span class="shell-role">${user.roles.join(", ") || "—"}</span></span>
+          <button id="logout-button">Se déconnecter</button>
+        </div>
+      </div>
+
+      <div id="dashboard-container"></div>
       <div id="patients-container"></div>
+      <div id="users-container"></div>
+
+      <p class="phase-note">
+        Le tableau de bord complet (sidebar, KPIs financiers, tous les modules)
+        arrive à partir de la Phase 9. Les sections ci-dessus sont déjà
+        pleinement fonctionnelles : les chiffres viennent de PostgreSQL en
+        temps réel, et la création d'utilisateur passe réellement par l'API.
+      </p>
     </div>
   `;
 
@@ -91,7 +97,13 @@ export async function renderAuthenticatedShell(container) {
     window.location.reload();
   });
 
+  await renderDashboardSection(container.querySelector("#dashboard-container"), user.permissions);
+
   if (user.permissions.includes("patients.read")) {
     await renderPatientsSection(container.querySelector("#patients-container"));
+  }
+
+  if (user.permissions.includes("users.read")) {
+    await renderUsersSection(container.querySelector("#users-container"));
   }
 }
