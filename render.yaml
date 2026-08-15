@@ -1,0 +1,56 @@
+# CLINIC OS — Render Blueprint
+#
+# Deploys the whole application (backend + frontend, one URL, no CORS
+# to configure) plus a managed PostgreSQL database, wired together
+# automatically. On Render: New + -> Blueprint -> connect this repo ->
+# Render reads this file and provisions everything below.
+#
+# Free tier notes (honest, so there are no surprises):
+#   - The free "web" plan spins the service down after ~15 minutes of
+#     inactivity; the next visit takes ~30-60s to wake back up.
+#   - The free PostgreSQL database expires after 90 days. For anything
+#     beyond trying the app out, upgrade both to a paid plan before
+#     that point (Render will email a reminder).
+
+databases:
+  - name: clinic-os-db
+    databaseName: clinic_os
+    user: clinic_user
+    plan: free
+
+services:
+  - type: web
+    name: clinic-os
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/health
+    preDeployCommand: alembic upgrade head && python database/seed.py
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: clinic-os-db
+          property: connectionString
+      - key: DATABASE_URL_SYNC
+        fromDatabase:
+          name: clinic-os-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: APP_NAME
+        value: CLINIC OS
+      - key: API_V1_PREFIX
+        value: /api
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: CORS_ORIGINS
+        value: "*"
