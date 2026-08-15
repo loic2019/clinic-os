@@ -71,6 +71,7 @@ PERMISSION_CATALOG: dict[str, list[tuple[str, str]]] = {
     "doctors": [("read", "Voir les medecins"), ("create", "Creer un medecin"), ("update", "Modifier un medecin")],
     "medical_acts": [("read", "Voir le catalogue des actes"), ("create", "Creer un acte medical"), ("update", "Modifier un acte medical (y compris les prix)")],
     "appointments": [("read", "Voir les rendez-vous"), ("create", "Creer un rendez-vous"), ("update", "Modifier un rendez-vous")],
+    "laboratory": [("read", "Voir le laboratoire"), ("create", "Creer une commande d'analyse"), ("update", "Enregistrer prelevements et resultats"), ("validate", "Valider un resultat d'analyse")],
 }
 
 # Which roles get which modules fully (all actions) -- a simplified
@@ -78,11 +79,11 @@ PERMISSION_CATALOG: dict[str, list[tuple[str, str]]] = {
 # from the (future) permissions administration screen.
 ROLE_MODULE_GRANTS: dict[str, list[str]] = {
     "SUPER_ADMIN": list(PERMISSION_CATALOG.keys()),  # everything
-    "ADMIN": ["patients", "medical_records", "consultations", "billing", "payments", "hr", "users", "audit", "doctors", "medical_acts", "appointments"],
-    "DIRECTOR": ["patients", "consultations", "billing", "accounting", "hr", "audit", "doctors", "medical_acts", "appointments"],
-    "DOCTOR": ["patients", "medical_records", "consultations", "appointments", "medical_acts", "doctors"],
+    "ADMIN": ["patients", "medical_records", "consultations", "billing", "payments", "hr", "users", "audit", "doctors", "medical_acts", "appointments", "laboratory"],
+    "DIRECTOR": ["patients", "consultations", "billing", "accounting", "hr", "audit", "doctors", "medical_acts", "appointments", "laboratory"],
+    "DOCTOR": ["patients", "medical_records", "consultations", "appointments", "medical_acts", "doctors", "laboratory"],
     "NURSE": ["patients", "consultations", "appointments"],
-    "LAB_TECHNICIAN": ["patients", "medical_records"],
+    "LAB_TECHNICIAN": ["patients", "medical_records", "laboratory"],
     "PHARMACIST": ["patients", "medical_records"],
     "ACCOUNTANT": ["billing", "payments", "accounting"],
     "HR_MANAGER": ["hr", "doctors"],
@@ -211,6 +212,37 @@ async def seed_demo_medical_data(session) -> None:
     await session.commit()
 
 
+async def seed_demo_lab_catalog(session) -> None:
+    """Adds a starter lab test catalog (spec section 36 examples) if none exist yet."""
+    from sqlalchemy import func
+
+    from app.models.laboratory import LabTestCatalog
+
+    count = (await session.execute(select(func.count()).select_from(LabTestCatalog))).scalar_one()
+    if count > 0:
+        print(f"Analyses de laboratoire : {count} deja presentes, seed de demo ignore.")
+        return
+
+    catalog = [
+        ("LAB-001", "NFS", "Hematologie", "g/dL", 12.0, 16.0),
+        ("LAB-002", "Glycemie", "Biochimie", "g/L", 0.7, 1.1),
+        ("LAB-003", "Creatinine", "Biochimie", "mg/L", 6.0, 12.0),
+        ("LAB-004", "Uree", "Biochimie", "g/L", 0.15, 0.45),
+        ("LAB-005", "Cholesterol total", "Biochimie", "g/L", 1.5, 2.0),
+        ("LAB-006", "Triglycerides", "Biochimie", "g/L", 0.5, 1.5),
+        ("LAB-007", "CRP", "Biochimie", "mg/L", 0.0, 6.0),
+    ]
+    for code, name, category, unit, low, high in catalog:
+        test = LabTestCatalog(
+            code=code, name=name, category=category, unit=unit,
+            reference_range_low=low, reference_range_high=high,
+        )
+        session.add(test)
+
+    await session.commit()
+    print(f"Catalogue de laboratoire : {len(catalog)} analyses creees.")
+
+
 async def seed() -> None:
     async with AsyncSessionLocal() as session:
         # --- Roles ---
@@ -265,6 +297,7 @@ async def seed() -> None:
 
         await seed_demo_patients(session)
         await seed_demo_medical_data(session)
+        await seed_demo_lab_catalog(session)
 
 
 if __name__ == "__main__":
