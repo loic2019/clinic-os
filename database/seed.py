@@ -79,8 +79,8 @@ PERMISSION_CATALOG: dict[str, list[tuple[str, str]]] = {
 # from the (future) permissions administration screen.
 ROLE_MODULE_GRANTS: dict[str, list[str]] = {
     "SUPER_ADMIN": list(PERMISSION_CATALOG.keys()),  # everything
-    "ADMIN": ["patients", "medical_records", "consultations", "billing", "payments", "hr", "users", "audit", "doctors", "medical_acts", "appointments", "laboratory"],
-    "DIRECTOR": ["patients", "consultations", "billing", "accounting", "hr", "audit", "doctors", "medical_acts", "appointments", "laboratory"],
+    "ADMIN": ["patients", "medical_records", "consultations", "billing", "payments", "hr", "users", "audit", "doctors", "medical_acts", "appointments", "laboratory", "cash", "refund", "invoice", "accounting"],
+    "DIRECTOR": ["patients", "consultations", "billing", "accounting", "hr", "audit", "doctors", "medical_acts", "appointments", "laboratory", "cash", "refund", "invoice"],
     "DOCTOR": ["patients", "medical_records", "consultations", "appointments", "medical_acts", "doctors", "laboratory"],
     "NURSE": ["patients", "consultations", "appointments"],
     "LAB_TECHNICIAN": ["patients", "medical_records", "laboratory"],
@@ -243,6 +243,51 @@ async def seed_demo_lab_catalog(session) -> None:
     print(f"Catalogue de laboratoire : {len(catalog)} analyses creees.")
 
 
+async def seed_demo_cash_registers(session) -> None:
+    """Adds starter cash registers (spec section 19) if none exist yet."""
+    from sqlalchemy import func
+
+    from app.models.cash import CashRegister
+
+    count = (await session.execute(select(func.count()).select_from(CashRegister))).scalar_one()
+    if count > 0:
+        print(f"Caisses : {count} deja presentes, seed de demo ignore.")
+        return
+
+    registers = [("CAISSE-01", "Caisse 01"), ("CAISSE-02", "Caisse 02")]
+    for code, name in registers:
+        session.add(CashRegister(code=code, name=name))
+
+    await session.commit()
+
+
+async def seed_chart_of_accounts(session) -> None:
+    """Adds a minimal chart of accounts (spec section 35) if none exist yet.
+    Codes 512/706/606 are referenced directly by AccountingService for
+    automatic entries — do not change them without updating that file."""
+    from sqlalchemy import func
+
+    from app.models.accounting import Account, AccountType
+
+    count = (await session.execute(select(func.count()).select_from(Account))).scalar_one()
+    if count > 0:
+        print(f"Comptes comptables : {count} deja presents, seed de demo ignore.")
+        return
+
+    accounts = [
+        ("512", "Caisse", AccountType.ASSET),
+        ("411", "Clients / Assurances", AccountType.ASSET),
+        ("706", "Recettes medicales", AccountType.REVENUE),
+        ("606", "Depenses diverses", AccountType.EXPENSE),
+        ("641", "Salaires et charges", AccountType.EXPENSE),
+    ]
+    for code, name, account_type in accounts:
+        session.add(Account(code=code, name=name, account_type=account_type))
+
+    await session.commit()
+    print(f"Plan comptable : {len(accounts)} comptes crees.")
+
+
 async def seed() -> None:
     async with AsyncSessionLocal() as session:
         # --- Roles ---
@@ -298,6 +343,8 @@ async def seed() -> None:
         await seed_demo_patients(session)
         await seed_demo_medical_data(session)
         await seed_demo_lab_catalog(session)
+        await seed_demo_cash_registers(session)
+        await seed_chart_of_accounts(session)
 
 
 if __name__ == "__main__":
