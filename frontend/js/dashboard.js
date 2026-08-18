@@ -58,6 +58,9 @@ export async function renderDashboardSection(container, permissions) {
   if (permissions.includes("users.read")) {
     cards.push({ label: "Utilisateurs", key: "users", fetch: () => safeCount("/users") });
   }
+  if (permissions.includes("billing.read")) {
+    cards.push({ label: "Factures", key: "invoices", fetch: () => safeCount("/invoices") });
+  }
 
   if (cards.length === 0) {
     grid.innerHTML = `<p class="kpi-empty">Aucune donnée disponible pour votre rôle.</p>`;

@@ -11,6 +11,8 @@ import { login, logout, getCurrentUser, getAccessToken } from "./api.js";
 import { renderPatientsSection } from "./patients.js";
 import { renderDashboardSection } from "./dashboard.js";
 import { renderUsersSection } from "./users.js";
+import { renderBillingSection } from "./billing.js";
+import { renderAccountingSection } from "./accounting.js";
 
 export async function isLoggedIn() {
   if (!getAccessToken()) return false;
@@ -80,6 +82,8 @@ export async function renderAuthenticatedShell(container) {
       </div>
 
       <div id="dashboard-container"></div>
+      <div id="billing-container"></div>
+      <div id="accounting-container"></div>
       <div id="patients-container"></div>
       <div id="users-container"></div>
 
@@ -98,6 +102,14 @@ export async function renderAuthenticatedShell(container) {
   });
 
   await renderDashboardSection(container.querySelector("#dashboard-container"), user.permissions);
+
+  if (user.permissions.includes("billing.create") && user.permissions.includes("cash.open")) {
+    await renderBillingSection(container.querySelector("#billing-container"));
+  }
+
+  if (user.permissions.includes("accounting.read")) {
+    await renderAccountingSection(container.querySelector("#accounting-container"));
+  }
 
   if (user.permissions.includes("patients.read")) {
     await renderPatientsSection(container.querySelector("#patients-container"));
