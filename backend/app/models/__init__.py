@@ -39,6 +39,23 @@ from app.models.laboratory import (  # noqa: F401
     LabTestCatalog,
     SampleType,
 )
+from app.models.cash import CashRegister, CashRegisterSession, CashSessionStatus  # noqa: F401
+from app.models.billing import (  # noqa: F401
+    CancellationRequest,
+    CancellationStatus,
+    Invoice,
+    InvoiceItem,
+    InvoiceItemType,
+    InvoiceStatus,
+)
+from app.models.payment import Payment, PaymentMethod, PaymentStatus, RefundRequest, RefundStatus  # noqa: F401
+from app.models.accounting import (  # noqa: F401
+    Account,
+    AccountingEntry,
+    AccountingLine,
+    AccountType,
+    Expense,
+)
 
 __all__ = [
     "UUIDPKMixin",
@@ -75,4 +92,23 @@ __all__ = [
     "LabOrderStatus",
     "LabItemStatus",
     "SampleType",
+    "CashRegister",
+    "CashRegisterSession",
+    "CashSessionStatus",
+    "Invoice",
+    "InvoiceItem",
+    "InvoiceItemType",
+    "InvoiceStatus",
+    "CancellationRequest",
+    "CancellationStatus",
+    "Payment",
+    "PaymentMethod",
+    "PaymentStatus",
+    "RefundRequest",
+    "RefundStatus",
+    "Account",
+    "AccountingEntry",
+    "AccountingLine",
+    "AccountType",
+    "Expense",
 ]
