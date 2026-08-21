@@ -528,6 +528,45 @@ body {
   margin-top: 12px;
 }
 
+/* --- Inventory & suppliers --- */
+
+.inventory-section,
+.suppliers-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.inventory-alerts {
+  margin: 12px 0;
+}
+
+.alert-row {
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.alert-row--warning {
+  background: rgba(247, 144, 9, 0.1);
+  color: var(--color-warning);
+}
+
+.alert-row--danger {
+  background: rgba(217, 45, 32, 0.1);
+  color: var(--color-danger);
+}
+
+.row-alert {
+  background: rgba(247, 144, 9, 0.06);
+}
+
+.add-item-details,
+.add-supplier-details {
+  margin: 16px 0;
+}
+
 /* --- Accounting --- */
 
 .accounting-section {

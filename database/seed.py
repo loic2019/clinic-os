@@ -72,6 +72,8 @@ PERMISSION_CATALOG: dict[str, list[tuple[str, str]]] = {
     "medical_acts": [("read", "Voir le catalogue des actes"), ("create", "Creer un acte medical"), ("update", "Modifier un acte medical (y compris les prix)")],
     "appointments": [("read", "Voir les rendez-vous"), ("create", "Creer un rendez-vous"), ("update", "Modifier un rendez-vous")],
     "laboratory": [("read", "Voir le laboratoire"), ("create", "Creer une commande d'analyse"), ("update", "Enregistrer prelevements et resultats"), ("validate", "Valider un resultat d'analyse")],
+    "inventory": [("read", "Voir les stocks"), ("create", "Creer un article de stock"), ("update", "Ajuster le stock et enregistrer des mouvements")],
+    "suppliers": [("read", "Voir les fournisseurs et commandes"), ("create", "Creer un fournisseur ou une commande"), ("update", "Modifier un fournisseur, receptionner une commande")],
 }
 
 # Which roles get which modules fully (all actions) -- a simplified
@@ -79,13 +81,13 @@ PERMISSION_CATALOG: dict[str, list[tuple[str, str]]] = {
 # from the (future) permissions administration screen.
 ROLE_MODULE_GRANTS: dict[str, list[str]] = {
     "SUPER_ADMIN": list(PERMISSION_CATALOG.keys()),  # everything
-    "ADMIN": ["patients", "medical_records", "consultations", "billing", "payments", "hr", "users", "audit", "doctors", "medical_acts", "appointments", "laboratory", "cash", "refund", "invoice", "accounting"],
-    "DIRECTOR": ["patients", "consultations", "billing", "accounting", "hr", "audit", "doctors", "medical_acts", "appointments", "laboratory", "cash", "refund", "invoice"],
+    "ADMIN": ["patients", "medical_records", "consultations", "billing", "payments", "hr", "users", "audit", "doctors", "medical_acts", "appointments", "laboratory", "cash", "refund", "invoice", "accounting", "inventory", "suppliers"],
+    "DIRECTOR": ["patients", "consultations", "billing", "accounting", "hr", "audit", "doctors", "medical_acts", "appointments", "laboratory", "cash", "refund", "invoice", "inventory", "suppliers"],
     "DOCTOR": ["patients", "medical_records", "consultations", "appointments", "medical_acts", "doctors", "laboratory"],
     "NURSE": ["patients", "consultations", "appointments"],
-    "LAB_TECHNICIAN": ["patients", "medical_records", "laboratory"],
-    "PHARMACIST": ["patients", "medical_records"],
-    "ACCOUNTANT": ["billing", "payments", "accounting"],
+    "LAB_TECHNICIAN": ["patients", "medical_records", "laboratory", "inventory"],
+    "PHARMACIST": ["patients", "medical_records", "inventory"],
+    "ACCOUNTANT": ["billing", "payments", "accounting", "suppliers"],
     "HR_MANAGER": ["hr", "doctors"],
     "CASHIER": ["patients", "billing", "payments", "cash", "refund", "invoice"],
     "RECEPTIONIST": ["patients", "consultations", "appointments", "doctors"],
