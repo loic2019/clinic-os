@@ -5,10 +5,11 @@ Phase 1 wired up `/api/health`. Phase 2 added `/api/auth` and
 `/api/users`. Phase 3 added `/api/patients`. Phase 4 added
 `/api/doctors`, `/api/medical-acts`, `/api/consultations`,
 `/api/appointments`. Phase 5 added `/api/laboratory`. Phase 7-8 added
-`/api/invoices`, `/api/payments`, `/api/cash`. Phase 9 adds
-`/api/accounting`. Later phases will add: /api/imaging, /api/pharmacy,
-/api/hospitalization, /api/emergency, /api/inventory, /api/suppliers,
-/api/hr, /api/payroll, /api/reports, /api/notifications, /api/audit,
+`/api/invoices`, `/api/payments`, `/api/cash`. Phase 9 added
+`/api/accounting`. Phase 10 adds `/api/inventory`, `/api/suppliers`,
+`/api/purchase-orders`. Later phases will add: /api/imaging,
+/api/pharmacy, /api/hospitalization, /api/emergency, /api/hr,
+/api/payroll, /api/reports, /api/notifications, /api/audit,
 /api/dashboard, /api/search, /api/ai
 """
 
@@ -22,11 +23,13 @@ from app.api.routes import (
     consultations,
     doctors,
     health,
+    inventory,
     invoices,
     laboratory,
     medical_acts,
     patients,
     payments,
+    suppliers,
     users,
 )
 
@@ -45,3 +48,5 @@ api_router.include_router(invoices.router, tags=["Invoices"])
 api_router.include_router(payments.router, tags=["Payments"])
 api_router.include_router(cash.router, tags=["Cash"])
 api_router.include_router(accounting.router, tags=["Accounting"])
+api_router.include_router(inventory.router, tags=["Inventory"])
+api_router.include_router(suppliers.router, tags=["Suppliers"])

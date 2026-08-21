@@ -56,6 +56,19 @@ from app.models.accounting import (  # noqa: F401
     AccountType,
     Expense,
 )
+from app.models.inventory import (  # noqa: F401
+    InventoryBatch,
+    InventoryCategory,
+    InventoryItem,
+    InventoryMovement,
+    MovementType,
+)
+from app.models.supplier import (  # noqa: F401
+    PurchaseOrder,
+    PurchaseOrderItem,
+    PurchaseOrderStatus,
+    Supplier,
+)
 
 __all__ = [
     "UUIDPKMixin",
@@ -111,4 +124,13 @@ __all__ = [
     "AccountingLine",
     "AccountType",
     "Expense",
+    "InventoryItem",
+    "InventoryBatch",
+    "InventoryMovement",
+    "InventoryCategory",
+    "MovementType",
+    "Supplier",
+    "PurchaseOrder",
+    "PurchaseOrderItem",
+    "PurchaseOrderStatus",
 ]
